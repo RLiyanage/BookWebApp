@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package edu.wctc.distjava.rnn.controller;
+package edu.wctc.distjava.rnn.bookwebapp.controller;
 
 import edu.wctc.distjava.rnn.bookwebapp.model.Author;
 import edu.wctc.distjava.rnn.bookwebapp.model.AuthorService;
