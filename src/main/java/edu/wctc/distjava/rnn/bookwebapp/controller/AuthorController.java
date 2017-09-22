@@ -21,9 +21,10 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Rasika
  */
-@WebServlet(name = "AuthorController", urlPatterns = {"/AuthorController"})
+@WebServlet(name = "AuthorController", urlPatterns = {"/authorController"})
 public class AuthorController extends HttpServlet {
-    private static final String ACTION = "action";
+    public static final String ACTION = "action";
+    public static final String LIST_ACTION = "list";
     private static final String ERROR_PAGE ="/error.jsp";
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -37,13 +38,19 @@ public class AuthorController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        String action = request.getParameter(ACTION);
-        AuthorService authorService;
+        
+        
         String destination = "/authorList.jsp";
         try {
-              authorService = new AuthorService(); 
-              List<Author> authorList = authorService.getAuthorList();
-              request.setAttribute("authorList", authorList);
+            String action = request.getParameter(ACTION);
+            AuthorService authorService = new AuthorService();              
+              List<Author>authorList = null;
+              
+              if(action.equalsIgnoreCase(LIST_ACTION)){
+                 authorList = authorService.getAuthorList();
+                 request.setAttribute("authorList", authorList);
+              }
+              
            
         }catch(Exception e){
          request.setAttribute("errorMsg", e.getMessage());

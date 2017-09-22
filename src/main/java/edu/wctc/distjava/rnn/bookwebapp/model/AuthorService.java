@@ -5,7 +5,10 @@
  */
 package edu.wctc.distjava.rnn.bookwebapp.model;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -13,17 +16,13 @@ import java.util.List;
  * @author Rasika
  */
 public class AuthorService {
-   private List <Author> authorNames; 
-   
-   public AuthorService(){
-       authorNames = new ArrayList<>();
-       
-   }
 
-   public List<Author> getAuthorList(){
-       authorNames.add(new Author("Rasika"));
-       authorNames.add(new Author("Sanuth"));
-       authorNames.add(new Author("Binuth"));
-      return authorNames; 
+   public List<Author> getAuthorList(){     
+      
+      return Arrays.asList(
+              new Author(1, "Mark Thaiwan",new Date()),
+              new Author(2, "Stephen Tuwan",new Date()),
+              new Author(3, "Gorge Twan",new Date())
+      );
    }
 }
