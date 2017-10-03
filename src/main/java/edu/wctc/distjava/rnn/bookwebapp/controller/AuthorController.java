@@ -6,7 +6,10 @@
 package edu.wctc.distjava.rnn.bookwebapp.controller;
 
 import edu.wctc.distjava.rnn.bookwebapp.model.Author;
+import edu.wctc.distjava.rnn.bookwebapp.model.AuthorDao;
 import edu.wctc.distjava.rnn.bookwebapp.model.AuthorService;
+import edu.wctc.distjava.rnn.bookwebapp.model.IAuthorDao;
+import edu.wctc.distjava.rnn.bookwebapp.model.MySqlDataAccess;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
@@ -23,9 +26,11 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet(name = "AuthorController", urlPatterns = {"/authorController"})
 public class AuthorController extends HttpServlet {
+
     public static final String ACTION = "action";
     public static final String LIST_ACTION = "list";
-    private static final String ERROR_PAGE ="/error.jsp";
+    private static final String ERROR_PAGE = "/error.jsp";
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -38,27 +43,36 @@ public class AuthorController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        
-        
+
         String destination = "/authorList.jsp";
         try {
             String action = request.getParameter(ACTION);
-            AuthorService authorService = new AuthorService();              
-              List<Author>authorList = null;
-              
-              if(action.equalsIgnoreCase(LIST_ACTION)){
-                 authorList = authorService.getAuthorList();
-                 request.setAttribute("authorList", authorList);
-              }
-              
-           
-        }catch(Exception e){
-         request.setAttribute("errorMsg", e.getMessage());
-         destination = ERROR_PAGE;
+            IAuthorDao dao = new AuthorDao(
+                    "com.mysql.jdbc.Driver",
+                    "jdbc:mysql://localhost:3306/book",
+                    "root", "admin",
+                    new MySqlDataAccess("com.mysql.jdbc.Driver",
+                            "jdbc:mysql://localhost:3306/book",
+                            "root", "admin")
+            );
+
+            AuthorService authorService
+                    = new AuthorService(dao);
+
+            List<Author> authorList = null;
+
+            if (action.equalsIgnoreCase(LIST_ACTION)) {
+                authorList = authorService.getAuthorList();
+                request.setAttribute("authorList", authorList);
+            }
+
+        } catch (Exception e) {
+            request.setAttribute("errorMsg", e.getMessage());
+            destination = ERROR_PAGE;
         }
-            
+
         RequestDispatcher view = request.getRequestDispatcher(destination);
-        view.forward(request, response); 
+        view.forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -99,5 +113,4 @@ public class AuthorController extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-    }
-
+}
