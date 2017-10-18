@@ -36,8 +36,26 @@ public class AuthorController extends HttpServlet {
     private static final String UPDATE_AUTHOR = "update";
     private static final String EDIT_AUTHOR = "edit";
     private static final String ACTION_SAVE = "Save";
-    private static final String ACTION_INSERT ="insertData";
+    private static final String ACTION_INSERT = "insertData";
+    private String driverClass;
+    private String url;
+    private String userName;
+    private String password;
 
+    
+@Override
+ public void init() throws ServletException {
+ driverClass = getServletContext()
+ .getInitParameter("db.driver.class");
+ url = getServletContext()
+ .getInitParameter("db.url");
+ userName = getServletContext()
+ .getInitParameter("db.username");
+ password = getServletContext()
+ .getInitParameter("db.password");
+ }
+    
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -59,13 +77,16 @@ public class AuthorController extends HttpServlet {
             String action = request.getParameter(ACTION);
             String authorId = request.getParameter("authorId");
             String authorName = request.getParameter("authorName");
-            String dateAdded = request.getParameter("dateAdded");
-            String formType = request.getParameter("formType");
+            String dateAdded = request.getParameter("dateAdded");           
             String buttonAction = request.getParameter("buttonAction");
             IAuthorDao dao = new AuthorDao(
-                    "com.mysql.jdbc.Driver",
-                    "jdbc:mysql://localhost:3306/book",
-                    "root", "admin",
+//                    "com.mysql.jdbc.Driver",
+//                    "jdbc:mysql://localhost:3306/book",
+//                    "root", "admin",
+                    driverClass,
+                    url,
+                    userName,
+                    password,
                     new MySqlDataAccess()
             );
 
@@ -76,41 +97,34 @@ public class AuthorController extends HttpServlet {
             if (action.equalsIgnoreCase(LIST_ACTION)) {
                 refreshList(authorService, request);
             } else if (action.equalsIgnoreCase(DELETE_AUTHOR)) {
-                authorService.removeAuthorById(authorId);
-                //request.setAttribute("rowDeleted", rowsDeleted);
+                authorService.removeAuthorById(authorId);                
                 refreshList(authorService, request);
 
             } else if (action.equalsIgnoreCase(ADD_AUTHOR)) {
                 String date = authorService.getCurrentDate();
-                request.setAttribute("date_added",date);
+                request.setAttribute("date_added", date);
                 destination = "/addAuthor.jsp";
-                
-         } else if (action.equalsIgnoreCase(UPDATE_AUTHOR)) {
-              if (buttonAction.equalsIgnoreCase(ACTION_SAVE)){
-              if (formType.equalsIgnoreCase("recEdit")) 
-                  
-          authorService.updateAuthorDetails(Arrays.asList(authorName, dateAdded), authorId);
-                       
-//          } else if (formType.equalsIgnoreCase("recAdd")) {                     
-//          authorService.addAuthor(Arrays.asList((authorName), dateAdded));
-//              }
-               }
-              refreshList(authorService, request);
-               destination = "/authorList.jsp";
+
+            } else if (action.equalsIgnoreCase(UPDATE_AUTHOR)) {
+                if (buttonAction.equalsIgnoreCase(ACTION_SAVE)) {
+                    
+                 authorService.updateAuthorDetails(Arrays.asList(authorName, dateAdded), authorId);           
+                }
+                refreshList(authorService, request);
+                destination = "/authorList.jsp";
 
             } else if (action.equalsIgnoreCase(EDIT_AUTHOR)) {
                 Map<String, Object> authorRec = authorService.findAuthorById(authorId);
                 request.setAttribute("authorRec", authorRec);
                 destination = "/editAuthor.jsp";
-            
-            }else if(action.equalsIgnoreCase(ACTION_INSERT)){
-              if(buttonAction.equalsIgnoreCase(ACTION_SAVE)){
-              if (formType.equalsIgnoreCase("recAdd"))
-                   authorService.addAuthor(Arrays.asList((authorName), dateAdded));
-               }
-               refreshList(authorService, request);
-               destination = "/authorList.jsp";
-          }
+
+            } else if (action.equalsIgnoreCase(ACTION_INSERT)) {
+                if (buttonAction.equalsIgnoreCase(ACTION_SAVE)) {                    
+                authorService.addAuthor(Arrays.asList((authorName), dateAdded));                    
+                }
+                refreshList(authorService, request);
+                destination = "/authorList.jsp";
+            }
         } catch (Exception e) {
             destination = "/authorList.jsp";
             request.setAttribute("errMessage", e.getMessage());

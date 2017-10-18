@@ -13,7 +13,7 @@
     </head>
     <body>
         <h1>Add Author Information</h1>
-        <form id="add" name="formType" value="" method = "POST" action ="authorController?action=insertData&formType=recAdd">
+        <form id="add" name="formType" value="" method = "POST" action ="authorController?action=insertData">
             <table border="1">
                 <tr>
                     <td>Author Name</td>

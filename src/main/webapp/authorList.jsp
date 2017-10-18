@@ -20,18 +20,18 @@
         <title>Author List</title>
     </head>
     <body>
+        <jsp:include page="header.jsp"/>
         
         <div class ="container">
         <h2>Author List</h2>
         <div class="row col-md-6">
-        <table  class ="table table-striped table-bordered table-condensed">
-            <tr><th> Author Id</th>
+        <table  class ="table table-striped table-bordered table-condensed">            
             <th> Author Name</th>
             <th> Date</th>
             <th colspan="2"> Delete/Edit</th></tr>
             <c:forEach var="a" items="${authorList}">
                 <tr>
-                    <td class="span2">${a.authorId}</td>                   
+                                       
                     <td class="span6">${a.authorName}</td>
                     <td class="span2"><fmt:formatDate pattern = "yyyy-MM-dd" value = "${a.dateAdded}" /></td>
                     <td class="span1"><button class="btn btn-danger" type="submit" value="Delete" onclick="location.href = 'authorController?action=delete&authorId=${a.authorId}'"> Delete</button></td>

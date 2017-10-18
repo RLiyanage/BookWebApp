@@ -18,7 +18,7 @@
     <body>
         <h1>Edit Author Information</h1>
 
-        <form id="edit" name="formType "value="" method = "POST" action ="authorController?action=update&formType=recEdit">
+        <form id="edit" name="formType "value="" method = "POST" action ="authorController?action=update">
             <table border="1">
                 <tr>
                     <td>Author Name</td>
