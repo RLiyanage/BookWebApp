@@ -34,4 +34,6 @@ public interface DataAccess {
     
     public abstract int updateRecord(String tableName, List<String> colNames, 
             List<Object> colValues, String pkColName,Object pkValue) throws SQLException;
+    public abstract Map<String, Object> findAuthorById (String tableName,String pkColName,Object pkValue)
+        throws SQLException;
 }

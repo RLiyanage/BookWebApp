@@ -108,7 +108,7 @@ public class MsSqlServerDataAccess implements DataAccess {
             System.out.println(rec);
         }
         int recsDeleted = db.deleteRecordById("CUSTOMER", "CUSTOMER_ID", 3);
-       // db.createRecord("author", Arrays.asList("author_name", "date_added"), Arrays.asList("Sanuth", "2017-10-06"));
+        db.createRecord("author", Arrays.asList("author_name", "date_added"), Arrays.asList("Sanuth", "2017-10-06"));
         System.out.println("No. of Recs Deleted: " + recsDeleted);
         db.closeConnection();
     }
@@ -122,6 +122,11 @@ public class MsSqlServerDataAccess implements DataAccess {
     public int updateRecord(String tableName, List<String> colNames, List<Object> colValues,String pkColName,Object pkValue) throws SQLException {
              throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     
+    }
+
+    @Override
+    public Map<String, Object>findAuthorById(String tableName, String pkColName, Object pkValue) throws SQLException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

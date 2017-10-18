@@ -79,35 +79,35 @@ public class MySqlDataAccess implements DataAccess {
         }
         return pstmt.executeUpdate();
     }
+
     @Override
-    public  int updateRecord(String tableName, List<String> colNames, 
-            List<Object> colValues,String pkColName,Object pkValue) throws SQLException{
-               
-    //"UPDATE " + tableName + " SET"colNames + "= ?" + "where "+ colNames +" = ?";
-    //UPDATE author SET author_name = ?, date_added = ? where author_id = ?
-    String sql = "UPDATE " + tableName + " SET ";
-     
-    StringJoiner sj = new StringJoiner(", ");
-    for( String col:colNames){
-      sj.add(col + " = ?");
-    }         
-    sql += sj + " where " + pkColName + " = ?";
-    
-    if(DEBUG){
-        System.out.println(sql);
-        pstmt =conn.prepareStatement(sql);
-    }
-    for(int i = 1; i <= colValues.size(); i++){
-        pstmt.setObject(i, colValues.get(i-1));
-    }
-    
+    public int updateRecord(String tableName, List<String> colNames,
+            List<Object> colValues, String pkColName, Object pkValue) throws SQLException {
+
+        //"UPDATE " + tableName + " SET"colNames + "= ?" + "where "+ colNames +" = ?";
+        //UPDATE author SET author_name = ?, date_added = ? where author_id = ?
+        String sql = "UPDATE " + tableName + " SET ";
+
+        StringJoiner sj = new StringJoiner(", ");
+        for (String col : colNames) {
+            sj.add(col + " = ?");
+        }
+        sql += sj + " where " + pkColName + " = ?";
+
+        if (DEBUG) {
+            System.out.println(sql);
+            pstmt = conn.prepareStatement(sql);
+        }
+        for (int i = 1; i <= colValues.size(); i++) {
+            pstmt.setObject(i, colValues.get(i - 1));
+        }
+
 //    for(int i = 0; i < colValues.size(); i++){
 //        pstmt.setObject(i + 1, colValues.get(i));
 //    }
-    
-    pstmt.setObject(colValues.size() + 1, pkValue);
-    return pstmt.executeUpdate();
-            }
+        pstmt.setObject(colValues.size() + 1, pkValue);
+        return pstmt.executeUpdate();
+    }
 
     @Override
     public int deleteRecordById(String tableName, String pkColName,
@@ -162,6 +162,43 @@ public class MySqlDataAccess implements DataAccess {
         return rawData;
     }
 
+    /**
+     *
+     * @param tableName
+     * @param pkColName
+     * @param pkValue
+     * @return
+     * @throws SQLException
+     */
+    @Override
+    public Map<String, Object> findAuthorById(String tableName, String pkColName, Object pkValue) 
+            throws SQLException {        
+        String sql;
+        sql = "select * from " + tableName + " where " + pkColName + " = ?";
+        if (DEBUG) {
+            System.out.println(sql);            
+        }
+        pstmt = conn.prepareStatement(sql);
+        pstmt.setObject(1, pkValue);
+        
+        rs = pstmt.executeQuery();
+
+        ResultSetMetaData rsmd = rs.getMetaData();
+        int colCount = rsmd.getColumnCount();
+        Map<String, Object> record = null;
+
+        while (rs.next()) {
+            record = new LinkedHashMap<>();
+            for (int colNum = 1; colNum <= colCount; colNum++) {
+                record.put(rsmd.getColumnName(colNum), rs.getObject(colNum));
+            }
+            
+        }
+
+        return record;
+    
+    }
+
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
         DataAccess db = new MySqlDataAccess();
         db.openConnection("com.mysql.jdbc.Driver",
@@ -169,16 +206,17 @@ public class MySqlDataAccess implements DataAccess {
                 "root", "admin");
 
         int recsDeleted = db.deleteRecordById("author", "author_id", 5);
-        db.updateRecord("author", Arrays.asList("author_name", "date_added"), Arrays.asList("Senudhi", "2017-10-10"),"author_id",6);
-        db.createRecord("author", Arrays.asList("author_name", "date_added"), Arrays.asList("Sanuth", "2017-10-06"));
+        db.updateRecord("author", Arrays.asList("author_name", "date_added"), Arrays.asList("Senudhi", "2017-10-10"), "author_id", 6);
+        db.createRecord("author", Arrays.asList("author_name", "date_added"), Arrays.asList("Binuth", "2017-10-06"));
         System.out.println("No. of Recs Deleted: " + recsDeleted);
         List<Map<String, Object>> list = db.getAllRecords("author", 0);
 
         for (Map<String, Object> rec : list) {
             System.out.println(rec);
         }
+        Map<String,Object>rec = db.findAuthorById("author", "author_id", 100);        
+            System.out.println("Record : "+ rec.get("author_name")+" " + rec.get("date_added") + " "+ rec.get("author_id"));        
         db.closeConnection();
-    }
+    }  
 
-    
 }

@@ -11,9 +11,10 @@ import edu.wctc.distjava.jgl.bookwebapp.model.AuthorService;
 import edu.wctc.distjava.jgl.bookwebapp.model.IAuthorDao;
 import edu.wctc.distjava.jgl.bookwebapp.model.MySqlDataAccess;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -27,11 +28,15 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet(name = "AuthorController", urlPatterns = {"/authorController"})
 public class AuthorController extends HttpServlet {
+
     private static final String ACTION = "action";
     private static final String LIST_ACTION = "list";
     private static final String DELETE_AUTHOR = "delete";
     private static final String ADD_AUTHOR = "add";
     private static final String UPDATE_AUTHOR = "update";
+    private static final String EDIT_AUTHOR = "edit";
+    private static final String ACTION_SAVE = "Save";
+    private static final String ACTION_INSERT ="insertData";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -48,47 +53,78 @@ public class AuthorController extends HttpServlet {
 
         String destination = "/authorList.jsp"; // default
         String message;
-        
+
         try {
+
             String action = request.getParameter(ACTION);
             String authorId = request.getParameter("authorId");
-            
+            String authorName = request.getParameter("authorName");
+            String dateAdded = request.getParameter("dateAdded");
+            String formType = request.getParameter("formType");
+            String buttonAction = request.getParameter("buttonAction");
             IAuthorDao dao = new AuthorDao(
-                "com.mysql.jdbc.Driver",
-                "jdbc:mysql://localhost:3306/book",
-                "root", "admin",
-                new MySqlDataAccess() 
+                    "com.mysql.jdbc.Driver",
+                    "jdbc:mysql://localhost:3306/book",
+                    "root", "admin",
+                    new MySqlDataAccess()
             );
-        
+
             AuthorService authorService = new AuthorService(dao);
-            
-            List<Author> authorList;
-            
+
+            List<Author> authorList = null;
+
             if (action.equalsIgnoreCase(LIST_ACTION)) {
-                authorList = authorService.getAuthorList();
-                request.setAttribute("authorList", authorList);
+                refreshList(authorService, request);
             } else if (action.equalsIgnoreCase(DELETE_AUTHOR)) {
-                int rowsDeleted = authorService.removeAuthorById(authorId);
-                if (rowsDeleted >= 1) {
-                    message = "Author record successfully deleted";
-                } else {
-                    message = "Author Id not found. Record was not deleted";
-                }
-                request.setAttribute("message", message);
+                authorService.removeAuthorById(authorId);
+                //request.setAttribute("rowDeleted", rowsDeleted);
+                refreshList(authorService, request);
+
             } else if (action.equalsIgnoreCase(ADD_AUTHOR)) {
-                // Call addAuthor method from the Service
-                // Display the message according to the result
-            } else if (action.equalsIgnoreCase(UPDATE_AUTHOR)) {
-                // Call updateAuthor method from the Service class
-                // Display the message according to the result
-            }            
+                String date = authorService.getCurrentDate();
+                request.setAttribute("date_added",date);
+                destination = "/addAuthor.jsp";
+                
+         } else if (action.equalsIgnoreCase(UPDATE_AUTHOR)) {
+              if (buttonAction.equalsIgnoreCase(ACTION_SAVE)){
+              if (formType.equalsIgnoreCase("recEdit")) 
+                  
+          authorService.updateAuthorDetails(Arrays.asList(authorName, dateAdded), authorId);
+                       
+//          } else if (formType.equalsIgnoreCase("recAdd")) {                     
+//          authorService.addAuthor(Arrays.asList((authorName), dateAdded));
+//              }
+               }
+              refreshList(authorService, request);
+               destination = "/authorList.jsp";
+
+            } else if (action.equalsIgnoreCase(EDIT_AUTHOR)) {
+                Map<String, Object> authorRec = authorService.findAuthorById(authorId);
+                request.setAttribute("authorRec", authorRec);
+                destination = "/editAuthor.jsp";
+            
+            }else if(action.equalsIgnoreCase(ACTION_INSERT)){
+              if(buttonAction.equalsIgnoreCase(ACTION_SAVE)){
+              if (formType.equalsIgnoreCase("recAdd"))
+                   authorService.addAuthor(Arrays.asList((authorName), dateAdded));
+               }
+               refreshList(authorService, request);
+               destination = "/authorList.jsp";
+          }
         } catch (Exception e) {
             destination = "/authorList.jsp";
             request.setAttribute("errMessage", e.getMessage());
         }
-        
+
         RequestDispatcher view = request.getRequestDispatcher(destination);
         view.forward(request, response);
+    }
+
+    private void refreshList(AuthorService authorService, HttpServletRequest request)
+            throws ClassNotFoundException, SQLException {
+        List<Author> authorList;
+        authorList = authorService.getAuthorList();
+        request.setAttribute("authorList", authorList);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

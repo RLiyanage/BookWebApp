@@ -1,10 +1,15 @@
 package edu.wctc.distjava.jgl.bookwebapp.model;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import javax.swing.text.DateFormatter;
 
 /**
  *
@@ -15,20 +20,22 @@ public class AuthorService {
     private IAuthorDao authorDao;
     private final String AUTHOR_TBL = "author";
     private final String AUTHOR_PK = "author_id";
-    
+
     public AuthorService(IAuthorDao authorDao) {
         setAuthorDao(authorDao);
     }
 
-    public int addAuthor(List<Object> colValues) throws SQLException, ClassNotFoundException {
+    public final int addAuthor(List<Object> colValues) throws SQLException, ClassNotFoundException {
         int recsAdded = authorDao.addAuthor(colValues);
         return recsAdded;
     }
-    public int updateAuthorDetails(List<Object> colValues, Object pkValue) 
+
+    public final int updateAuthorDetails(List<Object> colValues, Object pkValue)
             throws SQLException, ClassNotFoundException {
         int recsUpdated = authorDao.updateAuthorDetails(colValues, pkValue);
-        return 0;
+        return recsUpdated;
     }
+
     public final int removeAuthorById(String id)
             throws ClassNotFoundException, SQLException,
             NumberFormatException {
@@ -42,7 +49,21 @@ public class AuthorService {
         return authorDao.removeAuthorById(value);
     }
 
-    public List<Author> getAuthorList()
+    public String getCurrentDate() {
+        LocalDate date = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String dateFormatted = formatter.format(date);
+        return dateFormatted;
+    }
+
+    public final Map<String, Object> findAuthorById(String Id) throws ClassNotFoundException, SQLException,
+            NumberFormatException {
+        int IdValue = Integer.parseInt(Id);
+        Map<String, Object> rec = authorDao.findAuthorById(IdValue);
+        return rec;
+    }
+
+    public final List<Author> getAuthorList()
             throws SQLException, ClassNotFoundException {
 
         return authorDao.getListOfAuthors();
@@ -83,7 +104,10 @@ public class AuthorService {
         } else {
             System.out.println("Record was not found. So, it was not deleted");
         }
-        int recsAdded = authorService.addAuthor(Arrays.asList("Jedan","2017/10/05"));
-        int recsUpdated = authorService.updateAuthorDetails(Arrays.asList("Aidan","2012-08-30"),60);
+        int recsAdded = authorService.addAuthor(Arrays.asList("Jedan", "2017/10/05"));
+        int recsUpdated = authorService.updateAuthorDetails(Arrays.asList("Aidan", "2012-08-30"), 60);
+        Map<String, Object> rec = authorService.findAuthorById("101");
+        System.out.println("Records:" + " " + rec.get("author_name") + " " + rec.get("date_added"));
+        System.out.println("Date: " + authorService.getCurrentDate());
     }
 }

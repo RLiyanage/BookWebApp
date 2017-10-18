@@ -10,7 +10,7 @@ import java.util.Vector;
 
 /**
  *
- * @author jlombardo
+ * @author Rasika Nanayakkara
  */
 public class AuthorDao implements IAuthorDao {
 
@@ -25,9 +25,8 @@ public class AuthorDao implements IAuthorDao {
     private final String DATE_ADDED = "date_added";
     
 
-    public AuthorDao(String driverClass, String url,
-            String userName, String password,
-            DataAccess db) {
+    public AuthorDao (String driverClass, String url,
+            String userName, String password,DataAccess db) {
 
         setDriverClass(driverClass);
         setUrl(url);
@@ -62,6 +61,14 @@ public class AuthorDao implements IAuthorDao {
         int recsDeleted = db.deleteRecordById(AUTHOR_TBL, AUTHOR_PK, id);
         db.closeConnection();
         return recsDeleted;
+    }
+    @Override
+    public final Map<String, Object> findAuthorById(Integer id) throws ClassNotFoundException, SQLException{
+        Map<String, Object> record = null;
+        db.openConnection(driverClass, url, userName, password);
+        record = db.findAuthorById(AUTHOR_TBL, AUTHOR_PK, id);
+        db.closeConnection();
+        return record;
     }
 
     @Override
@@ -152,6 +159,8 @@ public class AuthorDao implements IAuthorDao {
             System.out.println(a.getAuthorId() + ", "
                     + a.getAuthorName() + ", " + a.getDateAdded() + "\n");
         }
+        Map<String,Object> rec = dao.findAuthorById(100);
+        System.out.println(" Records:" + rec.get("author_name")+" "+ rec.get("date_added"));
     }
 
 }
