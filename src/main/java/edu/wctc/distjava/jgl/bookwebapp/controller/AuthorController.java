@@ -69,7 +69,7 @@ public class AuthorController extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
 
-        String destination = "/authorList.jsp"; // default
+        String destination = "/authorList.jsp";
         String message;
 
         try {

@@ -32,6 +32,7 @@ public class AuthorDao implements IAuthorDao {
         setUrl(url);
         setUserName(userName);
         setPassword(password);
+        
         setDb(db);
     }
 
