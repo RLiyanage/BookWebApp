@@ -73,37 +73,37 @@ public class AuthorController extends HttpServlet {
             
 //                   
 
-            AuthorService authorService = new AuthorService();
+//            AuthorService authorService = new AuthorService();
 
             List<Author> authorList = null;
 
             if (action.equalsIgnoreCase(LIST_ACTION)) {
                 refreshList(authorService, request);
             } else if (action.equalsIgnoreCase(DELETE_AUTHOR)) {
-                authorService.removeAuthorById(authorId);                
+//                authorService.removeAuthorById(authorId);                
                 refreshList(authorService, request);
 
             } else if (action.equalsIgnoreCase(ADD_AUTHOR)) {
-                String date = authorService.getCurrentDate();
-                request.setAttribute("date_added", date);
+//                String date = authorService.getCurrentDate();
+//                request.setAttribute("date_added", date);
                 destination = "/addAuthor.jsp";
 
             } else if (action.equalsIgnoreCase(UPDATE_AUTHOR)) {
                 if (buttonAction.equalsIgnoreCase(ACTION_SAVE)) {
                     
-                 authorService.updateAuthorDetails(Arrays.asList(authorName, dateAdded), authorId);           
+//                 authorService.updateAuthorDetails(Arrays.asList(authorName, dateAdded), authorId);           
                 }
                 refreshList(authorService, request);
                 destination = "/authorList.jsp";
 
             } else if (action.equalsIgnoreCase(EDIT_AUTHOR)) {
-                Map<String, Object> authorRec = authorService.findAuthorById(authorId);
-                request.setAttribute("authorRec", authorRec);
+//                Map<String, Object> authorRec = authorService.findAuthorById(authorId);
+//                request.setAttribute("authorRec", authorRec);
                 destination = "/editAuthor.jsp";
 
             } else if (action.equalsIgnoreCase(ACTION_INSERT)) {
                 if (buttonAction.equalsIgnoreCase(ACTION_SAVE)) {                    
-                authorService.addAuthor(Arrays.asList((authorName), dateAdded));                    
+//                authorService.addAuthor(Arrays.asList((authorName), dateAdded));                    
                 }
                 refreshList(authorService, request);
                 destination = "/authorList.jsp";

@@ -3,11 +3,7 @@ package edu.wctc.distjava.jgl.bookwebapp.model;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.Stateless;
@@ -30,40 +26,49 @@ public class AuthorService implements Serializable{
 
     public AuthorService() {
     }
-
-    public final int addAuthor(List<Object> colValues) throws SQLException, ClassNotFoundException {
-
-        return 0;
+    public EntityManager getEm() {
+        return em;
     }
 
-    public final int updateAuthorDetails(List<Object> colValues, Object pkValue)
-            throws SQLException, ClassNotFoundException {
-
-        return 0;
+    public void setEm(EntityManager em) {
+        this.em = em;
     }
 
-    public final int removeAuthorById(String id)
-            throws ClassNotFoundException, SQLException,
-            NumberFormatException {
-        if (id == null || id.equals("")) {
-            throw new IllegalArgumentException("id must be a Integer greater than 0");
-        }
-        Integer value = Integer.parseInt(id);
-        return 0;
-    }
 
-    public String getCurrentDate() {
-        LocalDate date = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        String dateFormatted = formatter.format(date);
-        return dateFormatted;
-    }
+//    public final int addAuthor(List<Object> colValues) throws SQLException, ClassNotFoundException {
+//
+//        return 0;
+//    }
 
-    public final Map<String, Object> findAuthorById(String Id) throws ClassNotFoundException, SQLException,
-            NumberFormatException {
-        int IdValue = Integer.parseInt(Id);
-        return null;
-    }
+//    public final int updateAuthorDetails(List<Object> colValues, Object pkValue)
+//            throws SQLException, ClassNotFoundException {
+//
+//        return 0;
+//    }
+//
+//    public final int removeAuthorById(String id)
+//            throws ClassNotFoundException, SQLException,
+//            NumberFormatException {
+//        if (id == null || id.equals("")) {
+//            throw new IllegalArgumentException("id must be a Integer greater than 0");
+//        }
+//        Integer value = Integer.parseInt(id);
+//        return 0;
+//    }
+//    
+//
+//    public String getCurrentDate() {
+//        LocalDate date = LocalDate.now();
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+//        String dateFormatted = formatter.format(date);
+//        return dateFormatted;
+//    }
+//
+//    public final Map<String, Object> findAuthorById(String Id) throws ClassNotFoundException, SQLException,
+//            NumberFormatException {
+//        int IdValue = Integer.parseInt(Id);
+//        return null;
+//    }
 
     public final List<Author> getAuthorList()
             throws Exception{
@@ -75,12 +80,5 @@ public class AuthorService implements Serializable{
         return q.getResultList();
     }
 
-    public EntityManager getEm() {
-        return em;
-    }
-
-    public void setEm(EntityManager em) {
-        this.em = em;
-    }
-
+   
 }

@@ -10,29 +10,31 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import static javax.swing.text.StyleConstants.Size;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
-import static jdk.nashorn.internal.runtime.Debug.id;
 
 /**
  *
  * @author jlombardo
  */
 @Entity
-@Table(name="author")
-public class Author implements Serializable{
-    private static final long serialVersionUID =1L;
-    @Id
-    @GeneratedValue(strategy =GenerationType.IDENTITY)
-    @Basic(optional =false)
-    @Size(max=80)
-    @Column(name="author_id")
-    private Integer authorId;
-    @Size(max=80)
-    @Column(name="author_name")    
-    private String authorName;
-    @Column(name="date_added")    
+@Table(name = "author")
+public class Author implements Serializable {
+    private static final long serialVersionUID = 1L;
     
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "author_id")
+    private Integer authorId;
+    
+    @Size(max = 45)
+    @Column(name = "author_name")
+    private String authorName;
+    
+    @Column(name = "date_added")
+    @Temporal(TemporalType.DATE)
     private Date dateAdded;
 
     public Author() {
