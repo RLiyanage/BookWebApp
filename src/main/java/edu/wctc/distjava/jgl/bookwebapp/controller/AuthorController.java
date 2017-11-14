@@ -71,39 +71,37 @@ public class AuthorController extends HttpServlet {
             String dateAdded = request.getParameter("dateAdded");           
             String buttonAction = request.getParameter("buttonAction");
             
-//                   
 
-//            AuthorService authorService = new AuthorService();
 
             List<Author> authorList = null;
 
             if (action.equalsIgnoreCase(LIST_ACTION)) {
                 refreshList(authorService, request);
             } else if (action.equalsIgnoreCase(DELETE_AUTHOR)) {
-//                authorService.removeAuthorById(authorId);                
+               authorService.removeAuthorById(authorId);                
                 refreshList(authorService, request);
 
             } else if (action.equalsIgnoreCase(ADD_AUTHOR)) {
-//                String date = authorService.getCurrentDate();
-//                request.setAttribute("date_added", date);
+                String date = authorService.getCurrentDate();
+                request.setAttribute("date_added", date);
                 destination = "/addAuthor.jsp";
 
             } else if (action.equalsIgnoreCase(UPDATE_AUTHOR)) {
                 if (buttonAction.equalsIgnoreCase(ACTION_SAVE)) {
                     
-//                 authorService.updateAuthorDetails(Arrays.asList(authorName, dateAdded), authorId);           
+                authorService.updateAuthorDetails(authorId,authorName);
                 }
                 refreshList(authorService, request);
                 destination = "/authorList.jsp";
 
             } else if (action.equalsIgnoreCase(EDIT_AUTHOR)) {
-//                Map<String, Object> authorRec = authorService.findAuthorById(authorId);
-//                request.setAttribute("authorRec", authorRec);
+              Author authorRec = authorService.findAuthorById(authorId);
+               request.setAttribute("authorRec", authorRec);
                 destination = "/editAuthor.jsp";
 
             } else if (action.equalsIgnoreCase(ACTION_INSERT)) {
                 if (buttonAction.equalsIgnoreCase(ACTION_SAVE)) {                    
-//                authorService.addAuthor(Arrays.asList((authorName), dateAdded));                    
+                authorService.addAuthor(Arrays.asList((authorName), dateAdded));                    
                 }
                 refreshList(authorService, request);
                 destination = "/authorList.jsp";
@@ -123,44 +121,44 @@ public class AuthorController extends HttpServlet {
         authorList = authorService.getAuthorList();
         request.setAttribute("authorList", authorList);
     }
-//
-//     <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-//    /**
-//     * Handles the HTTP <code>GET</code> method.
-//     *
-//     * @param request servlet request
-//     * @param response servlet response
-//     * @throws ServletException if a servlet-specific error occurs
-//     * @throws IOException if an I/O error occurs
-//     */
-//    @Override
-//    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-//            throws ServletException, IOException {
-//        processRequest(request, response);
-//    }
-//
-//    /**
-//     * Handles the HTTP <code>POST</code> method.
-//     *
-//     * @param request servlet request
-//     * @param response servlet response
-//     * @throws ServletException if a servlet-specific error occurs
-//     * @throws IOException if an I/O error occurs
-//     */
-//    @Override
-//    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-//            throws ServletException, IOException {
-//        processRequest(request, response);
-//    }
-//
-//    /**
-//     * Returns a short description of the servlet.
-//     *
-//     * @return a String containing servlet description
-//     */
-//    @Override
-//    public String getServletInfo() {
-//        return "Short description";
-//    }// </editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    /**
+     * Handles the HTTP <code>GET</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processRequest(request, response);
+    }
+
+    /**
+     * Handles the HTTP <code>POST</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processRequest(request, response);
+    }
+
+    /**
+     * Returns a short description of the servlet.
+     *
+     * @return a String containing servlet description
+     */
+    @Override
+    public String getServletInfo() {
+        return "Short description";
+    }// </editor-fold>
 
 }

@@ -22,21 +22,15 @@
             <table border="1">
                 <tr>
                     <td>Author Name</td>
-                    <td> <input type ="text" name="authorName" value="${authorRec.get("author_name")}"</td>
+                    <td> <input type ="text" name="authorName" value="${authorRec.getAuthorName()}"</td>
                 </tr>
                 
                 <tr>
                     <td>Date Added</td>
-                    <td> <input type ="text" name="dateAdded" value="${authorRec.get("date_added")}" readonly=""</td>
-                </tr>
-                
-                
-                    
-                       <input type ="hidden" name="authorId" value="${authorRec.get("author_id")}"> 
-                    
-               
-                       
-               
+                    <td> <input type ="text" name="dateAdded"  value="<fmt:formatDate pattern = "yyyy-MM-dd" value = "${authorRec.getDateAdded()}" />"readonly=""</td>
+                </tr>                       
+                       <input type ="hidden" name="authorId" value="${authorRec.getAuthorId()}">                          
+                                     
             </table>
             
             
