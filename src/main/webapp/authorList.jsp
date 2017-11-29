@@ -1,8 +1,4 @@
-<%-- 
-    Document   : authorList
-    Created on : Sep 19, 2017, 8:35:54 PM
-    Author     : jlombardo
---%>
+
 
 <%@page import="java.util.List"%>
 <%@page import="edu.wctc.distjava.jgl.bookwebapp.model.Author"%>
@@ -42,6 +38,7 @@
         </table> 
         
         <button class="btn btn-success" type="submit" value="Add" onclick="location.href = 'authorController?action=add'">Add</button>
+        <button class="btn btn-success" type="submit" value="list" onclick="location.href = 'bookController?action=list'">Book List</button>
 
         </div>
     </div>
