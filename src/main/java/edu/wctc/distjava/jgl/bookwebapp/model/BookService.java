@@ -1,69 +1,62 @@
 package edu.wctc.distjava.jgl.bookwebapp.model;
 
 
+import edu.wctc.distjava.jgl.bookwebapp.repository.AuthorRepository;
+import edu.wctc.distjava.jgl.bookwebapp.repository.BookRepository;
 import java.util.List;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  *
  * @author Rasika
  */
-@Stateless
-public class BookService extends AbstractFacade<Book> {
 
-    @PersistenceContext(unitName = "book_PU")
-    private EntityManager em;
-
-    @Override
-    protected EntityManager getEm() {
-        return em;
-    }
-
-    public BookService() {
-        super(Book.class);
-    }
-
+@Service
+public class BookService  {
+    
+    @Autowired
+    private BookRepository bookRepo;
+    
+    @Autowired
+    private AuthorRepository authorRepo; 
+    
     public List<Book> getBOOkList()
             throws Exception {
-        return findAll();
+        return bookRepo.findAll();
     }
 
     public void removeById(String bookId) {
         Book book = new Book();
         book.setBookId(Integer.parseInt(bookId));
-        remove(book);
+        bookRepo.delete(book);
     }
 
-    public void addNewBook(String title, String isbn, String authorId) {
+    public void addNewBook(String title, String isbn, String authorId) {              
+        Author author = authorRepo.findOne( new Integer(authorId));
         Book book = new Book();
         book.setTitle(title);
-        book.setIsbn(isbn);
-        
-        Author author = getEm().find(Author.class, new Integer(authorId));
+        book.setIsbn(isbn);  
         book.setAuthor(author);
-        getEm().merge(book);
+        bookRepo.save(book);
 
     }
 
     public void updateBookDetails(String id, String title, String isbn, String authorId) {
         int value = Integer.parseInt(id);
-        Book book = getEm().find(Book.class, value);
+        Book book = bookRepo.findOne(value);
         book.setTitle(title);
         book.setIsbn(isbn);
-        Author author = getEm().find(Author.class, new Integer(authorId));
+        Author author =authorRepo.findOne( new Integer(authorId));
         book.setAuthor(author);
-        getEm().merge(book);
+        bookRepo.save(book);
 
     }
 
 
     public Book findBookById(String Id) {
-//        Book book = new Book();
-//        book.setBookId(Integer.parseInt(Id));
         Integer id = new Integer(Id);
-        return findById(id);
+        return bookRepo.findOne(id);
 
     }
 }

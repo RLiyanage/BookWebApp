@@ -1,29 +1,25 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package edu.wctc.distjava.jgl.bookwebapp.controller;
 
 import edu.wctc.distjava.jgl.bookwebapp.model.Author;
 import edu.wctc.distjava.jgl.bookwebapp.model.AuthorService;
 
-
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
-import javax.ejb.EJB;
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /**
  *
- * @author jlombardo
+ * @author Rasika
  */
 @WebServlet(name = "AuthorController", urlPatterns = {"/authorController"})
 public class AuthorController extends HttpServlet {
@@ -36,16 +32,14 @@ public class AuthorController extends HttpServlet {
     private static final String EDIT_AUTHOR = "edit";
     private static final String ACTION_SAVE = "Save";
     private static final String ACTION_INSERT = "insertData";
-    @EJB
-    private AuthorService authorService;
+
+
+    //ServletContext sctx;
+    //WebApplicationContext ctx;
+    AuthorService authorService;
 
     
-@Override
- public void init() throws ServletException {
- 
- }
-    
-    
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -67,17 +61,15 @@ public class AuthorController extends HttpServlet {
             String action = request.getParameter(ACTION);
             String authorId = request.getParameter("authorId");
             String authorName = request.getParameter("authorName");
-            String dateAdded = request.getParameter("dateAdded");           
+            String dateAdded = request.getParameter("dateAdded");
             String buttonAction = request.getParameter("buttonAction");
-            
-
 
             List<Author> authorList = null;
 
             if (action.equalsIgnoreCase(LIST_ACTION)) {
                 refreshList(authorService, request);
             } else if (action.equalsIgnoreCase(DELETE_AUTHOR)) {
-               authorService.removeAuthorById(authorId);                
+                authorService.removeAuthorById(authorId);
                 refreshList(authorService, request);
 
             } else if (action.equalsIgnoreCase(ADD_AUTHOR)) {
@@ -87,20 +79,20 @@ public class AuthorController extends HttpServlet {
 
             } else if (action.equalsIgnoreCase(UPDATE_AUTHOR)) {
                 if (buttonAction.equalsIgnoreCase(ACTION_SAVE)) {
-                    
-                authorService.updateAuthorDetails(authorId,authorName);
+
+                    authorService.updateAuthorDetails(authorId, authorName);
                 }
                 refreshList(authorService, request);
                 destination = "/authorList.jsp";
 
             } else if (action.equalsIgnoreCase(EDIT_AUTHOR)) {
-              Author authorRec = authorService.findAuthorById(authorId);
-               request.setAttribute("authorRec", authorRec);
+                Author authorRec = authorService.findAuthorById(authorId);
+                request.setAttribute("authorRec", authorRec);
                 destination = "/editAuthor.jsp";
 
             } else if (action.equalsIgnoreCase(ACTION_INSERT)) {
-                if (buttonAction.equalsIgnoreCase(ACTION_SAVE)) {                    
-                authorService.addAuthor(Arrays.asList((authorName), dateAdded));                    
+                if (buttonAction.equalsIgnoreCase(ACTION_SAVE)) {
+                    authorService.addAuthor(Arrays.asList((authorName), dateAdded));
                 }
                 refreshList(authorService, request);
                 destination = "/authorList.jsp";
@@ -158,6 +150,23 @@ public class AuthorController extends HttpServlet {
     @Override
     public String getServletInfo() {
         return "Short description";
-    }// </editor-fold>
+        
+        
+        
+        
+    }
+    
+    @Override
+    public void init(){
+        // Ask Spring for object to inject
+        ServletContext sctx = getServletContext();
+
+        WebApplicationContext ctx = WebApplicationContextUtils
+                .getWebApplicationContext(sctx);
+        authorService = (AuthorService) ctx.getBean("authorService");
+    }
+
+
+// </editor-fold>
 
 }

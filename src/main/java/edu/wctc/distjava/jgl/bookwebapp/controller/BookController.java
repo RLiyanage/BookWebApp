@@ -6,13 +6,15 @@ import edu.wctc.distjava.jgl.bookwebapp.model.BookService;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
-import javax.ejb.EJB;
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /**
  *
@@ -29,15 +31,22 @@ public class BookController extends HttpServlet {
     private static final String EDIT_BOOK = "edit";
     private static final String ACTION_SAVE = "Save";
     private static final String ACTION_INSERT = "insertData";
-    @EJB
+
     private BookService bookService;
 
-    @EJB
-    private AuthorService authorService;
+    ServletContext sctx;
+    WebApplicationContext ctx;
+    AuthorService authorService;
 
     @Override
-    public void init() throws ServletException {
+    public void init(){
+        // Ask Spring for object to inject
+        sctx = getServletContext();
 
+        ctx = WebApplicationContextUtils
+                .getWebApplicationContext(sctx);
+        authorService = (AuthorService) ctx.getBean("authorService");
+        bookService = (BookService) ctx.getBean("bookService");
     }
 
     /**
@@ -110,7 +119,7 @@ public class BookController extends HttpServlet {
             throws ClassNotFoundException, SQLException, Exception {
         List<Book> bookList;
         //bookList = bookService.getBOOkList();
-        bookList = bookService.findAll();
+        bookList = bookService.getBOOkList();
         request.setAttribute("bookList", bookList);
     }
 
